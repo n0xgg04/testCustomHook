@@ -1,23 +1,15 @@
-import React, { useState, useRef } from 'react';
+import React from 'react';
+import useCountdown from './hooks/useCountdown';
 
 function App() {
-  const [seconds, setSeconds] = useState(0);
-  const inputRef = useRef(null);
-  const intervalRef = useRef(null);
-  const countdown = () => {
-    if (intervalRef.current) clearInterval(intervalRef.current)
-    const value = inputRef.current.value;
-    setSeconds(value);
-    intervalRef.current = setInterval(() => {
-      setSeconds(prevSeconds => prevSeconds - 1);
-    }, 1000)
-  }
+  const [sec, setSecs] = useCountdown(null);
+  const inputRef = React.useRef(null);
+
+  console.log("App component rendered")
 
   React.useEffect(() => {
-    return () => {
-      clearInterval(intervalRef.current);
-    }
-  }, []);
+    console.log("App component mounted or updated")
+  }, [])
 
   return (
     <div className="App" style={{
@@ -26,10 +18,13 @@ function App() {
       width: '50%',
       margin: '0 auto',
     }}>
-      <h1>Coundown app</h1>
-      <input ref={inputRef} type="number" placeholder="Enter number of seconds" />
-      {seconds > 0 && <h2>{seconds}</h2>}
-      <button onClick={countdown}>Start</button>
+      <h1>Countdown app</h1>
+      {sec > 0 ? <h2>{sec}</h2> : <h2>Time's up!</h2>}
+      <input ref={inputRef} type="number" placeholder="Enter seconds" />
+      <button onClick={() => {
+        setSecs(inputRef.current.value);
+        console.log("Start countdown")
+      }}>Start</button>
     </div>
   );
 }
